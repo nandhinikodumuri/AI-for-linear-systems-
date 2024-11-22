@@ -1,0 +1,83 @@
+from queue import Queue
+
+class State:
+    def __init__(self, missionaries, cannibals, boat):
+        self.missionaries = missionaries
+        self.cannibals = cannibals
+        self.boat = boat
+
+    def is_valid(self):
+        if self.missionaries < 0 or self.missionaries > 3 or self.cannibals < 0 or self.cannibals > 3:
+            return False
+        if self.missionaries < self.cannibals and self.missionaries != 0:
+            return False
+        if 3 - self.missionaries < 3 - self.cannibals and 3 - self.missionaries != 0:
+            return False
+        return True
+
+    def is_goal(self):
+        return self.missionaries == 0 and self.cannibals == 0 and self.boat == 0
+
+    def successors(self):
+        successors = []
+        if self.boat == 1:
+            new_state = State(self.missionaries - 1, self.cannibals, 0)
+            if new_state.is_valid():
+                successors.append(new_state)
+            new_state = State(self.missionaries, self.cannibals - 1, 0)
+            if new_state.is_valid():
+                successors.append(new_state)
+            new_state = State(self.missionaries - 1, self.cannibals - 1, 0)
+            if new_state.is_valid():
+                successors.append(new_state)
+            new_state = State(self.missionaries - 2, self.cannibals, 0)
+            if new_state.is_valid():
+                successors.append(new_state)
+            new_state = State(self.missionaries, self.cannibals - 2, 0)
+            if new_state.is_valid():
+                successors.append(new_state)
+        else:
+            new_state = State(self.missionaries + 1, self.cannibals, 1)
+            if new_state.is_valid():
+                successors.append(new_state)
+            new_state = State(self.missionaries, self.cannibals + 1, 1)
+            if new_state.is_valid():
+                successors.append(new_state)
+            new_state = State(self.missionaries + 1, self.cannibals + 1, 1)
+            if new_state.is_valid():
+                successors.append(new_state)
+            new_state = State(self.missionaries + 2, self.cannibals, 1)
+            if new_state.is_valid():
+                successors.append(new_state)
+            new_state = State(self.missionaries, self.cannibals + 2, 1)
+            if new_state.is_valid():
+                successors.append(new_state)
+        return successors
+
+def bfs(initial_state):
+    visited = set()
+    q = Queue()
+    q.put((initial_state, []))
+
+    while not q.empty():
+        current_state, path = q.get()
+        if current_state.is_goal():
+            return path + [current_state]
+        if current_state not in visited:
+            visited.add(current_state)
+            for successor in current_state.successors():
+                q.put((successor, path + [current_state]))
+    return None
+
+def print_solution(solution):
+    for i, state in enumerate(solution):
+        print(f"Step {i}: {state.missionaries}M - {state.cannibals}C - {'boat on left' if state.boat == 0 else 'boat on right'}")
+
+if __name__ == "__main__":
+    initial_state = State(3, 3, 1)  # Initial state: 3 missionaries, 3 cannibals, and boat on the left bank
+    solution = bfs(initial_state)
+    if solution:
+        print("Solution found:")
+        print_solution(solution)
+    else:
+        print("No solution exists.")
