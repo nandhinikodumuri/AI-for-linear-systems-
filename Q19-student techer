@@ -17,3 +17,10 @@ enrolled_in(john, math).
 enrolled_in(john, physics).
 enrolled_in(lisa, physics).
 enrolled_in(alex, chemistry).
+
+output:
+?- teaches(Teacher, math).
+Teacher = prof_smith.
+?- enrolled_in(john, Subject).
+Subject = math ;
+Subject = physics.
