@@ -10,3 +10,6 @@ sum_of_integers(N, Sum) :-
 % To find the sum of integers from 1 to 5, you can use:
 % ?- sum_of_integers(5, X).
 % X will contain the result, which is 15 in this case.
+output:
+sum(3,Result).
+Result = 6 ;
